@@ -23,55 +23,55 @@
     <h1>Diabetes Prediction Tool</h1>
     <form id="diabetesForm">
         <label for="age">Age:</label>
-        <input type="number" id="age" required>
+        <input type="number" id="age" step="1" required>
 
         <label for="gender">Gender (1: Male, 0: Female):</label>
-        <input type="number" id="gender" min="0" max="1" required>
+        <input type="number" id="gender" min="0" max="1" step="1" required>
 
         <label for="bmi">BMI:</label>
-        <input type="number" id="bmi" required>
+        <input type="number" id="bmi" step="0.1" required>
 
         <label for="sbp">SBP (Systolic Blood Pressure):</label>
-        <input type="number" id="sbp" required>
+        <input type="number" id="sbp" step="0.1" required>
 
         <label for="dbp">DBP (Diastolic Blood Pressure):</label>
-        <input type="number" id="dbp" required>
+        <input type="number" id="dbp" step="0.1" required>
 
         <label for="fpg">FPG (Fasting Plasma Glucose):</label>
-        <input type="number" id="fpg" required>
+        <input type="number" id="fpg" step="0.1" required>
 
         <label for="ffpg">FFPG (Final Fasting Plasma Glucose):</label>
-        <input type="number" id="ffpg" required>
+        <input type="number" id="ffpg" step="0.1" required>
 
         <label for="cholesterol">Cholesterol:</label>
-        <input type="number" id="cholesterol" required>
+        <input type="number" id="cholesterol" step="0.1" required>
 
         <label for="triglyceride">Triglyceride:</label>
-        <input type="number" id="triglyceride" required>
+        <input type="number" id="triglyceride" step="0.1" required>
 
         <label for="hdl">HDL (High-Density Lipoprotein):</label>
-        <input type="number" id="hdl" required>
+        <input type="number" id="hdl" step="0.1" required>
 
         <label for="ldl">LDL (Low-Density Lipoprotein):</label>
-        <input type="number" id="ldl" required>
+        <input type="number" id="ldl" step="0.1" required>
 
         <label for="alt">ALT (Alanine Aminotransferase):</label>
-        <input type="number" id="alt" required>
+        <input type="number" id="alt" step="0.1" required>
 
         <label for="bun">BUN (Blood urea nitrogen):</label>
-        <input type="number" id="bun" required>
+        <input type="number" id="bun" step="0.1" required>
 
         <label for="ccr">CCR (Creatinine Clearance):</label>
-        <input type="number" id="ccr" required>
+        <input type="number" id="ccr" step="0.1" required>
 
         <label for="smoking">Smoking Status (1: Current Smoker, 2: Ever Smoker, 3: Never Smoker):</label>
-        <input type="number" id="smoking" min="1" max="3" required>
+        <input type="number" id="smoking" min="1" max="3" step="1" required>
 
         <label for="drinking">Drinking Status (1: Current Drinker, 2: Ever Drinker, 3: Never Drinker):</label>
-        <input type="number" id="drinking" min="1" max="3" required>
+        <input type="number" id="drinking" min="1" max="3" step="1" required>
 
         <label for="familyHistory">Family History of Diabetes (1: Yes, 0: No):</label>
-        <input type="number" id="familyHistory" min="0" max="1" required>
+        <input type="number" id="familyHistory" min="0" max="1" step="1" required>
 
         <button type="submit">Predict</button>
     </form>
@@ -79,53 +79,52 @@
     <h2>Prediction: <span id="result">N/A</span></h2>
 
     <script>
-      // Load the TensorFlow.js model
-let model;
+        // Load the TensorFlow.js model
+        let model;
 
-async function loadModel() {
-    model = await tf.loadGraphModel('model/model.json');
-    console.log("Model Loaded");
-}
+        async function loadModel() {
+            model = await tf.loadGraphModel('model/model.json');
+            console.log("Model Loaded");
+        }
 
-// Handle form submission
-document.getElementById('diabetesForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
+        // Handle form submission
+        document.getElementById('diabetesForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-    // Get the input values
-    const age = parseFloat(document.getElementById('age').value);
-    const gender = parseFloat(document.getElementById('gender').value);
-    const bmi = parseFloat(document.getElementById('bmi').value);
-    const sbp = parseFloat(document.getElementById('sbp').value);
-    const dbp = parseFloat(document.getElementById('dbp').value);
-    const fpg = parseFloat(document.getElementById('fpg').value);
-    const ffpg = parseFloat(document.getElementById('ffpg').value);
-    const cholesterol = parseFloat(document.getElementById('cholesterol').value);
-    const triglyceride = parseFloat(document.getElementById('triglyceride').value);
-    const hdl = parseFloat(document.getElementById('hdl').value);
-    const ldl = parseFloat(document.getElementById('ldl').value);
-    const alt = parseFloat(document.getElementById('alt').value);
-    const bun = parseFloat(document.getElementById('bun').value);
-    const ccr = parseFloat(document.getElementById('ccr').value);
-    const smoking = parseFloat(document.getElementById('smoking').value);
-    const drinking = parseFloat(document.getElementById('drinking').value);
-    const familyHistory = parseFloat(document.getElementById('familyHistory').value);
+            // Get the input values
+            const age = parseFloat(document.getElementById('age').value);
+            const gender = parseFloat(document.getElementById('gender').value);
+            const bmi = parseFloat(document.getElementById('bmi').value);
+            const sbp = parseFloat(document.getElementById('sbp').value);
+            const dbp = parseFloat(document.getElementById('dbp').value);
+            const fpg = parseFloat(document.getElementById('fpg').value);
+            const ffpg = parseFloat(document.getElementById('ffpg').value);
+            const cholesterol = parseFloat(document.getElementById('cholesterol').value);
+            const triglyceride = parseFloat(document.getElementById('triglyceride').value);
+            const hdl = parseFloat(document.getElementById('hdl').value);
+            const ldl = parseFloat(document.getElementById('ldl').value);
+            const alt = parseFloat(document.getElementById('alt').value);
+            const bun = parseFloat(document.getElementById('bun').value);
+            const ccr = parseFloat(document.getElementById('ccr').value);
+            const smoking = parseFloat(document.getElementById('smoking').value);
+            const drinking = parseFloat(document.getElementById('drinking').value);
+            const familyHistory = parseFloat(document.getElementById('familyHistory').value);
 
-    // Create a tensor from the inputs
-    const inputTensor = tf.tensor2d([[age, gender, bmi, sbp, dbp, fpg, ffpg, cholesterol, triglyceride, hdl, ldl, alt, bun, ccr, smoking, drinking, familyHistory]]);
+            // Create a tensor from the inputs
+            const inputTensor = tf.tensor2d([[age, gender, bmi, sbp, dbp, fpg, ffpg, cholesterol, triglyceride, hdl, ldl, alt, bun, ccr, smoking, drinking, familyHistory]]);
 
-    // Make a prediction
-    const prediction = await model.predict(inputTensor).data();
-    const result = prediction[0] > 0.5 ? "Diabetic" : "Non-Diabetic";
+            // Make a prediction
+            const prediction = await model.predict(inputTensor).data();
+            const result = prediction[0] > 0.5 ? "Diabetic" : "Non-Diabetic";
 
-    // Display the result
-    document.getElementById('result').innerText = result;
-});
+            // Display the result
+            document.getElementById('result').innerText = result;
+        });
 
-// Load the model when the page loads
-window.onload = function() {
-    loadModel();
-};
-
+        // Load the model when the page loads
+        window.onload = function() {
+            loadModel();
+        };
     </script> 
 </body>
 </html>
