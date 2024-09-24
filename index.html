@@ -79,57 +79,81 @@
     <h2>Prediction: <span id="result">N/A</span></h2>
 
     <script>
-        // Load the TensorFlow.js model
-        let model;
+    // Load the TensorFlow.js model
+    let model;
 
-        async function loadModel() {
-            model = await tf.loadGraphModel('model/model.json');
-            console.log("Model Loaded");
-        }
+    async function loadModel() {
+        model = await tf.loadGraphModel('model/model.json');
+        console.log("Model Loaded");
+    }
 
-        // Handle form submission
-        document.getElementById('diabetesForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
+    // Feature scaling values (mean and scale) from your training process
+    const meanValues = [
+        51.2402149, 1.35111282, 24.4557483, 125.339217, 77.0353031, 5.40547583,
+        4.91138164, 1.70275923, 1.87443188, 3.12779612, 27.3298338, 4.91415283,
+        70.9819016, 6.07726784, 3.29023356, 3.48670325, 0.0663852648
+    ];
 
-            // Get the input values
-            const age = parseFloat(document.getElementById('age').value);
-            const gender = parseFloat(document.getElementById('gender').value);
-            const bmi = parseFloat(document.getElementById('bmi').value);
-            const sbp = parseFloat(document.getElementById('sbp').value);
-            const dbp = parseFloat(document.getElementById('dbp').value);
-            const fpg = parseFloat(document.getElementById('fpg').value);
-            const ffpg = parseFloat(document.getElementById('ffpg').value);
-            const cholesterol = parseFloat(document.getElementById('cholesterol').value);
-            const triglyceride = parseFloat(document.getElementById('triglyceride').value);
-            const hdl = parseFloat(document.getElementById('hdl').value);
-            const ldl = parseFloat(document.getElementById('ldl').value);
-            const alt = parseFloat(document.getElementById('alt').value);
-            const bun = parseFloat(document.getElementById('bun').value);
-            const ccr = parseFloat(document.getElementById('ccr').value);
-            const smoking = parseFloat(document.getElementById('smoking').value);
-            const drinking = parseFloat(document.getElementById('drinking').value);
-            const familyHistory = parseFloat(document.getElementById('familyHistory').value);
+    const scaleValues = [
+        15.03995224, 0.47731814, 3.42459317, 18.37916222, 11.34275106, 0.82885643,
+        0.92372039, 1.25138401, 1.32166059, 0.97020705, 22.62534192, 1.30293057,
+        18.04094273, 1.66165593, 1.32556986, 1.06166425, 0.24895434
+    ];
 
-            // Create a tensor from the inputs
-            const inputTensor = tf.tensor2d([[age, gender, bmi, sbp, dbp, fpg, ffpg, cholesterol, triglyceride, hdl, ldl, alt, bun, ccr, smoking, drinking, familyHistory]]);
+    // Function to apply standard scaling (z-score normalization)
+    function scaleInput(inputs) {
+        return inputs.map((value, index) => (value - meanValues[index]) / scaleValues[index]);
+    }
 
-            // Make a prediction
-            const prediction = await model.predict(inputTensor).data();
-            
-            // Log the prediction for debugging
-            console.log("Model output probabilities:", prediction);
+    document.getElementById('diabetesForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
 
-            // Adjust threshold if necessary (e.g., 0.6 instead of 0.5)
-            const result = prediction[0] > 0.6 ? "Diabetic" : "Non-Diabetic";
+        // Get the input values
+        const age = parseFloat(document.getElementById('age').value);
+        const gender = parseFloat(document.getElementById('gender').value);
+        const bmi = parseFloat(document.getElementById('bmi').value);
+        const sbp = parseFloat(document.getElementById('sbp').value);
+        const dbp = parseFloat(document.getElementById('dbp').value);
+        const fpg = parseFloat(document.getElementById('fpg').value);
+        const ffpg = parseFloat(document.getElementById('ffpg').value);
+        const cholesterol = parseFloat(document.getElementById('cholesterol').value);
+        const triglyceride = parseFloat(document.getElementById('triglyceride').value);
+        const hdl = parseFloat(document.getElementById('hdl').value);
+        const ldl = parseFloat(document.getElementById('ldl').value);
+        const alt = parseFloat(document.getElementById('alt').value);
+        const bun = parseFloat(document.getElementById('bun').value);
+        const ccr = parseFloat(document.getElementById('ccr').value);
+        const smoking = parseFloat(document.getElementById('smoking').value);
+        const drinking = parseFloat(document.getElementById('drinking').value);
+        const familyHistory = parseFloat(document.getElementById('familyHistory').value);
 
-            // Display the result
-            document.getElementById('result').innerText = result;
-        });
+        // Create an array of input values
+        let inputs = [
+            age, gender, bmi, sbp, dbp, fpg, ffpg, cholesterol, triglyceride, hdl, ldl,
+            alt, bun, ccr, smoking, drinking, familyHistory
+        ];
 
-        // Load the model when the page loads
-        window.onload = function() {
-            loadModel();
-        };
-    </script> 
+        // Scale the input values using the mean and scale from training
+        let scaledInputs = scaleInput(inputs);
+
+        // Create a tensor from the scaled inputs
+        const inputTensor = tf.tensor2d([scaledInputs]);
+
+        // Make a prediction
+        const prediction = await model.predict(inputTensor).data();
+
+        // Adjust threshold (e.g., 0.6)
+        const result = prediction[0] > 0.6 ? "Diabetic" : "Non-Diabetic";
+
+        // Display the result
+        document.getElementById('result').innerText = result;
+    });
+
+    // Load the model when the page loads
+    window.onload = function() {
+        loadModel();
+    };
+</script>
+
 </body>
 </html>
