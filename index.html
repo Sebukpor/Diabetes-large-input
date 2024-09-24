@@ -115,7 +115,12 @@
 
             // Make a prediction
             const prediction = await model.predict(inputTensor).data();
-            const result = prediction[0] > 0.5 ? "Diabetic" : "Non-Diabetic";
+            
+            // Log the prediction for debugging
+            console.log("Model output probabilities:", prediction);
+
+            // Adjust threshold if necessary (e.g., 0.6 instead of 0.5)
+            const result = prediction[0] > 0.6 ? "Diabetic" : "Non-Diabetic";
 
             // Display the result
             document.getElementById('result').innerText = result;
