@@ -143,7 +143,7 @@
         const prediction = await model.predict(inputTensor).data();
 
         // Adjust threshold (e.g., 0.6)
-        const result = prediction[0] > 0.6 ? "Diabetic" : "Non-Diabetic";
+        const result = prediction[0] > 0.5 ? "Diabetic" : "Non-Diabetic";
 
         // Display the result
         document.getElementById('result').innerText = result;
