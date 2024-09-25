@@ -3,157 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diabetes Prediction</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script> <!-- Load TensorFlow.js -->
+    <title>DAS MedHub - Diabetes Prediction</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
         }
-        label, input {
-            margin-bottom: 10px;
+        header {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 2em;
+        }
+        header span.orange {
+            color: #ff7f50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .container h2 {
+            color: #28a745;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
             display: block;
+            margin-bottom: 5px;
         }
-        button {
-            margin-top: 10px;
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Diabetes Prediction Tool</h1>
-    <form id="diabetesForm">
-        <label for="age">Age:</label>
-        <input type="number" id="age" step="1" required>
+    <header>
+        DAS <span class="orange">MedHub</span>
+    </header>
+    <div class="container">
+        <h2>Diabetes Prediction</h2>
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" placeholder="Enter Age">
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender">
+                <option value="0">Female</option>
+                <option value="1">Male</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="bmi">BMI</label>
+            <input type="number" id="bmi" placeholder="Enter BMI">
+        </div>
+        <div class="form-group">
+            <label for="sbp">SBP (Systolic Blood Pressure)</label>
+            <input type="number" id="sbp" placeholder="Enter SBP">
+        </div>
+        <div class="form-group">
+            <label for="dbp">DBP (Diastolic Blood Pressure)</label>
+            <input type="number" id="dbp" placeholder="Enter DBP">
+        </div>
+        <div class="form-group">
+            <label for="fpg">FPG (Fasting Plasma Glucose)</label>
+            <input type="number" id="fpg" placeholder="Enter FPG">
+        </div>
+        <div class="form-group">
+            <label for="ffpg">FFPG (Final Fasting Plasma Glucose)</label>
+            <input type="number" id="ffpg" placeholder="Enter FFPG">
+        </div>
+        <div class="form-group">
+            <label for="cholesterol">Cholesterol</label>
+            <input type="number" id="cholesterol" placeholder="Enter Cholesterol">
+        </div>
+        <div class="form-group">
+            <label for="triglyceride">Triglyceride</label>
+            <input type="number" id="triglyceride" placeholder="Enter Triglyceride">
+        </div>
+        <div class="form-group">
+            <label for="hdl">HDL (High-Density Lipoprotein)</label>
+            <input type="number" id="hdl" placeholder="Enter HDL">
+        </div>
+        <div class="form-group">
+            <label for="ldl">LDL (Low-Density Lipoprotein)</label>
+            <input type="number" id="ldl" placeholder="Enter LDL">
+        </div>
+        <div class="form-group">
+            <label for="alt">ALT (Alanine Aminotransferase)</label>
+            <input type="number" id="alt" placeholder="Enter ALT">
+        </div>
+        <div class="form-group">
+            <label for="bun">BUN (Blood Urea Nitrogen)</label>
+            <input type="number" id="bun" placeholder="Enter BUN">
+        </div>
+        <div class="form-group">
+            <label for="ccr">CCR (Creatinine Clearance)</label>
+            <input type="number" id="ccr" placeholder="Enter CCR">
+        </div>
+        <div class="form-group">
+            <label for="smoking">Smoking Status</label>
+            <select id="smoking">
+                <option value="1">Current Smoker</option>
+                <option value="2">Ever Smoker</option>
+                <option value="3">Never Smoker</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="drinking">Drinking Status</label>
+            <select id="drinking">
+                <option value="1">Current Drinker</option>
+                <option value="2">Ever Drinker</option>
+                <option value="3">Never Drinker</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="family_history">Family History of Diabetes</label>
+            <select id="family_history">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+            </select>
+        </div>
+        <button class="btn" onclick="predict()">Predict Diabetes</button>
+        <div class="result" id="result"></div>
+    </div>
 
-        <label for="gender">Gender (1: Male, 0: Female):</label>
-        <input type="number" id="gender" min="0" max="1" step="1" required>
-
-        <label for="bmi">BMI:</label>
-        <input type="number" id="bmi" step="0.1" required>
-
-        <label for="sbp">SBP (Systolic Blood Pressure):</label>
-        <input type="number" id="sbp" step="0.1" required>
-
-        <label for="dbp">DBP (Diastolic Blood Pressure):</label>
-        <input type="number" id="dbp" step="0.1" required>
-
-        <label for="fpg">FPG (Fasting Plasma Glucose):</label>
-        <input type="number" id="fpg" step="0.1" required>
-
-        <label for="ffpg">FFPG (Final Fasting Plasma Glucose):</label>
-        <input type="number" id="ffpg" step="0.1" required>
-
-        <label for="cholesterol">Cholesterol:</label>
-        <input type="number" id="cholesterol" step="0.1" required>
-
-        <label for="triglyceride">Triglyceride:</label>
-        <input type="number" id="triglyceride" step="0.1" required>
-
-        <label for="hdl">HDL (High-Density Lipoprotein):</label>
-        <input type="number" id="hdl" step="0.1" required>
-
-        <label for="ldl">LDL (Low-Density Lipoprotein):</label>
-        <input type="number" id="ldl" step="0.1" required>
-
-        <label for="alt">ALT (Alanine Aminotransferase):</label>
-        <input type="number" id="alt" step="0.1" required>
-
-        <label for="bun">BUN (Blood urea nitrogen):</label>
-        <input type="number" id="bun" step="0.1" required>
-
-        <label for="ccr">CCR (Creatinine Clearance):</label>
-        <input type="number" id="ccr" step="0.1" required>
-
-        <label for="smoking">Smoking Status (1: Current Smoker, 2: Ever Smoker, 3: Never Smoker):</label>
-        <input type="number" id="smoking" min="1" max="3" step="1" required>
-
-        <label for="drinking">Drinking Status (1: Current Drinker, 2: Ever Drinker, 3: Never Drinker):</label>
-        <input type="number" id="drinking" min="1" max="3" step="1" required>
-
-        <label for="familyHistory">Family History of Diabetes (1: Yes, 0: No):</label>
-        <input type="number" id="familyHistory" min="0" max="1" step="1" required>
-
-        <button type="submit">Predict</button>
-    </form>
-
-    <h2>Prediction: <span id="result">N/A</span></h2>
-
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script>
-    // Load the TensorFlow.js model
-    let model;
-
-    async function loadModel() {
-        model = await tf.loadGraphModel('model/model.json');
-        console.log("Model Loaded");
-    }
-
-    // Feature scaling values (mean and scale) from your training process
-    const meanValues = [
-        51.2402149, 1.35111282, 24.4557483, 125.339217, 77.0353031, 5.40547583,
-        4.91138164, 1.70275923, 1.87443188, 3.12779612, 27.3298338, 4.91415283,
-        70.9819016, 6.07726784, 3.29023356, 3.48670325, 0.0663852648
-    ];
-
-    const scaleValues = [
-        15.03995224, 0.47731814, 3.42459317, 18.37916222, 11.34275106, 0.82885643,
-        0.92372039, 1.25138401, 1.32166059, 0.97020705, 22.62534192, 1.30293057,
-        18.04094273, 1.66165593, 1.32556986, 1.06166425, 0.24895434
-    ];
-
-    // Function to apply standard scaling (z-score normalization)
-    function scaleInput(inputs) {
-        return inputs.map((value, index) => (value - meanValues[index]) / scaleValues[index]);
-    }
-
-    document.getElementById('diabetesForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        // Get the input values
-        const age = parseFloat(document.getElementById('age').value);
-        const gender = parseFloat(document.getElementById('gender').value);
-        const bmi = parseFloat(document.getElementById('bmi').value);
-        const sbp = parseFloat(document.getElementById('sbp').value);
-        const dbp = parseFloat(document.getElementById('dbp').value);
-        const fpg = parseFloat(document.getElementById('fpg').value);
-        const ffpg = parseFloat(document.getElementById('ffpg').value);
-        const cholesterol = parseFloat(document.getElementById('cholesterol').value);
-        const triglyceride = parseFloat(document.getElementById('triglyceride').value);
-        const hdl = parseFloat(document.getElementById('hdl').value);
-        const ldl = parseFloat(document.getElementById('ldl').value);
-        const alt = parseFloat(document.getElementById('alt').value);
-        const bun = parseFloat(document.getElementById('bun').value);
-        const ccr = parseFloat(document.getElementById('ccr').value);
-        const smoking = parseFloat(document.getElementById('smoking').value);
-        const drinking = parseFloat(document.getElementById('drinking').value);
-        const familyHistory = parseFloat(document.getElementById('familyHistory').value);
-
-        // Create an array of input values
-        let inputs = [
-            age, gender, bmi, sbp, dbp, fpg, ffpg, cholesterol, triglyceride, hdl, ldl,
-            alt, bun, ccr, smoking, drinking, familyHistory
-        ];
-
-        // Scale the input values using the mean and scale from training
-        let scaledInputs = scaleInput(inputs);
-
-        // Create a tensor from the scaled inputs
-        const inputTensor = tf.tensor2d([scaledInputs]);
-
-        // Make a prediction
-        const prediction = await model.predict(inputTensor).data();
-
-        // Adjust threshold (e.g., 0.6)
-        const result = prediction[0] > 0.5 ? "Diabetic" : "Non-Diabetic";
-
-        // Display the result
-        document.getElementById('result').innerText = result;
-    });
-
-    // Load the model when the page loads
-    window.onload = function() {
+        // Load the TensorFlow.js model
+        let model;
+        async function loadModel() {
+            model = await tf.loadGraphModel('model/model.json');
+        }
         loadModel();
-    };
-</script>
 
+        // Mean and standard deviation values for normalization
+        const mean = [0.23215784, -0.00512799, 0.09726924, 0.12391352, 0.06913895, 0.21696028, 0.05762992, 0.06906796, 0.17854376, 0.15927513, 0.02335763, 0.08272925, -0.0135344, 0.25712003, 0.25148426, 0.30983301, -0.00381977];
+        const stdDev = [1.01953472, 0.99839193, 0.99019269, 1.05387812, 1.03583022, 1.05413792, 1.01805432, 1.02907673, 1.21011857, 1.08509004, 1.01001565, 1.04955877, 1.04462061, 1.16833406, 1.09495203, 1.11865442, 0.99300214];
+
+        // Function to predict diabetes
+        function predict() {
+            const inputs = [
+                parseFloat(document.getElementById("age").value),
+                parseFloat(document.getElementById("gender").value),
+                parseFloat(document.getElementById("bmi").value),
+                parseFloat(document.getElementById("sbp").value),
+                parseFloat(document.getElementById("dbp").value),
+                parseFloat(document.getElementById("fpg").value),
+                parseFloat(document.getElementById("ffpg").value),
+                parseFloat(document.getElementById("cholesterol").value),
+                parseFloat(document.getElementById("triglyceride").value),
+                parseFloat(document.getElementById("hdl").value),
+                parseFloat(document.getElementById("ldl").value),
+                parseFloat(document.getElementById("alt").value),
+                parseFloat(document.getElementById("bun").value),
+                parseFloat(document.getElementById("ccr").value),
+                parseFloat(document.getElementById("smoking").value),
+                parseFloat(document.getElementById("drinking").value),
+                parseFloat(document.getElementById("family_history").value)
+            ];
+
+            // Normalize the input values
+            const normalizedInputs = inputs.map((val, idx) => (val - mean[idx]) / stdDev[idx]);
+
+            // Convert the normalized inputs to a tensor and make prediction
+            const inputTensor = tf.tensor([normalizedInputs]);
+            const prediction = model.predict(inputTensor).dataSync()[0];
+
+            // Display the result
+            const resultDiv = document.getElementById("result");
+            if (prediction > 0.5) {
+                resultDiv.innerHTML = `<b style="color: red;">Diabetes Detected</b>`;
+            } else {
+                resultDiv.innerHTML = `<b style="color: green;">No Diabetes Detected</b>`;
+            }
+        }
+    </script>
 </body>
 </html>
