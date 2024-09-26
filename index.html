@@ -184,43 +184,51 @@ const stdDev = [
   0.42434572, 0.23871787
 ];
 
-        // Function to predict diabetes
-        function predict() {
-            const inputs = [
-                parseFloat(document.getElementById("age").value),
-                parseFloat(document.getElementById("gender").value),
-                parseFloat(document.getElementById("bmi").value),
-                parseFloat(document.getElementById("sbp").value),
-                parseFloat(document.getElementById("dbp").value),
-                parseFloat(document.getElementById("fpg").value),
-                parseFloat(document.getElementById("ffpg").value),
-                parseFloat(document.getElementById("cholesterol").value),
-                parseFloat(document.getElementById("triglyceride").value),
-                parseFloat(document.getElementById("hdl").value),
-                parseFloat(document.getElementById("ldl").value),
-                parseFloat(document.getElementById("alt").value),
-                parseFloat(document.getElementById("bun").value),
-                parseFloat(document.getElementById("ccr").value),
-                parseFloat(document.getElementById("smoking").value),
-                parseFloat(document.getElementById("drinking").value),
-                parseFloat(document.getElementById("family_history").value)
-            ];
+       function predict() {
+    const inputs = [
+        parseFloat(document.getElementById("age").value),
+        parseFloat(document.getElementById("gender").value),
+        parseFloat(document.getElementById("bmi").value),
+        parseFloat(document.getElementById("sbp").value),
+        parseFloat(document.getElementById("dbp").value),
+        parseFloat(document.getElementById("fpg").value),
+        parseFloat(document.getElementById("cholesterol").value),
+        parseFloat(document.getElementById("triglyceride").value),
+        parseFloat(document.getElementById("hdl").value),
+        parseFloat(document.getElementById("ldl").value),
+        parseFloat(document.getElementById("alt").value),
+        parseFloat(document.getElementById("bun").value),
+        parseFloat(document.getElementById("ccr").value),
+        parseFloat(document.getElementById("ffpg").value),
+        parseFloat(document.getElementById("smoking").value),
+        parseFloat(document.getElementById("drinking").value),
+        parseFloat(document.getElementById("family_history").value)
+    ];
 
-            // Normalize the input values
-            const normalizedInputs = inputs.map((val, idx) => (val - mean[idx]) / stdDev[idx]);
-
-            // Convert the normalized inputs to a tensor and make prediction
-            const inputTensor = tf.tensor([normalizedInputs]);
-            const prediction = model.predict(inputTensor).dataSync()[0];
-
-            // Display the result
-            const resultDiv = document.getElementById("result");
-            if (prediction > 0.5) {
-                resultDiv.innerHTML = `<b style="color: red;">Diabetes Detected</b>`;
-            } else {
-                resultDiv.innerHTML = `<b style="color: green;">No Diabetes Detected</b>`;
-            }
+    // Validate that all fields are filled in
+    for (let i = 0; i < inputs.length; i++) {
+        if (isNaN(inputs[i])) {
+            alert("Please fill in all fields correctly.");
+            return;  // Stop execution if any field is invalid
         }
+    }
+
+    // Normalize the input values
+    const normalizedInputs = inputs.map((val, idx) => (val - mean[idx]) / stdDev[idx]);
+
+    // Convert the normalized inputs to a tensor and make prediction
+    const inputTensor = tf.tensor([normalizedInputs]);
+    const prediction = model.predict(inputTensor).dataSync()[0];
+
+    // Display the result
+    const resultDiv = document.getElementById("result");
+    if (prediction > 0.5) {
+        resultDiv.innerHTML = `<b style="color: red;">Diabetes Detected</b>`;
+    } else {
+        resultDiv.innerHTML = `<b style="color: green;">No Diabetes Detected</b>`;
+    }
+}
+
     </script>
 </body>
 </html>
