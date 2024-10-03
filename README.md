@@ -66,6 +66,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 For questions or collaboration, feel free to contact **Divine Sebukpor**, founder of DAS medhub. You can also open an issue or contribute to the repository directly.
+Please contact the project maintainer at dasmedhub@gmail.com or divinesebukpor@gmail.com
 
 ---
 
