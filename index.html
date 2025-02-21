@@ -1,414 +1,533 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diabetes Prediction</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f9fb;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #28a745;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            font-size: 2em;
-            font-weight: bold;
-        }
-        header span.orange {
-            color: #ff7f50;
-            margin-right: 1100px;
-            font-weight: bold;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        .container h2 {
-            color: #28a745;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .btn {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            width: 100%;
-            border-radius: 5px;
-        }
-        .btn:hover {
-            background-color: #218838;
-        }
-        .result {
-            margin-top: 20px;
-            font-size: 18px;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diabetes Risk Assessment | MedHub</title>
+  <style>
+    /* Improved UI/UX CSS */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f9fb;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #28a745;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      font-size: 2em;
+    }
+    .logo .accent {
+      color: #ff7f50;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .form-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .form-section {
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .form-section h3 {
+      margin-top: 0;
+      color: #28a745;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .input-hint {
+      font-size: 12px;
+      color: #777;
+    }
+    .btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px auto;
+    }
+    .btn:hover {
+      background-color: #218838;
+    }
+    .result {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    .result.positive {
+      color: red;
+    }
+    .result.negative {
+      color: green;
+    }
+    .loading {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.8);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #28a745;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        DAS <span class="orange">medhub</span>
-    </header>
-    <div class="container">
-        <h1>Diabetes Classification</h1>
-        <h2>Enter Patient Information</h2>
-        
-        <!-- Input fields for all features -->
-        <div class="form-group">
-            <label for="age">Age</label>
-            <input type="number" id="age" placeholder="Enter Age">
-        </div>
-        <div class="form-group">
-            <label for="gender">Gender</label>
-            <select id="gender">
-                <option value="0">Male</option>
-                <option value="1">Female</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="ethnicity">Ethnicity</label>
-            <select id="ethnicity">
-                <option value="0">Caucasian</option>
-                <option value="1">African American</option>
-                <option value="2">Asian</option>
-                <option value="3">Other</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="socioeconomic_status">Socioeconomic Status</label>
-            <select id="socioeconomic_status">
-                <option value="0">Low</option>
-                <option value="1">Middle</option>
-                <option value="2">High</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="education_level">Education Level</label>
-            <select id="education_level">
-                <option value="0">None</option>
-                <option value="1">High School</option>
-                <option value="2">Bachelor's</option>
-                <option value="3">Higher</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="bmi">BMI</label>
-            <input type="number" id="bmi" placeholder="Enter BMI">
-        </div>
-        <div class="form-group">
-            <label for="smoking">Smoking</label>
-            <select id="smoking">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="alcohol_consumption">Alcohol Consumption (units/week)(0-20)</label>
-            <input type="number" id="alcohol_consumption" placeholder="Enter Alcohol Consumption">
-        </div>
-        <div class="form-group">
-            <label for="physical_activity">Physical Activity (hours/week)(0-10)</label>
-            <input type="number" id="physical_activity" placeholder="Enter Physical Activity">
-        </div>
-        <div class="form-group">
-            <label for="diet_quality">Diet Quality (score 0-10)</label>
-            <input type="number" id="diet_quality" placeholder="Enter Diet Quality">
-        </div>
-        <div class="form-group">
-            <label for="sleep_quality">Sleep Quality (score 4-10)</label>
-            <input type="number" id="sleep_quality" placeholder="Enter Sleep Quality">
-        </div>
-        <div class="form-group">
-            <label for="family_history_diabetes">Family History of Diabetes</label>
-            <select id="family_history_diabetes">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="gestational_diabetes">Gestational Diabetes</label>
-            <select id="gestational_diabetes">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="polycystic_ovary_syndrome">Polycystic Ovary Syndrome</label>
-            <select id="polycystic_ovary_syndrome">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="previous_pre_diabetes">Previous Pre-Diabetes</label>
-            <select id="previous_pre_diabetes">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="hypertension">Hypertension</label>
-            <select id="hypertension">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="systolic_bp">Systolic Blood Pressure (SBP)</label>
-            <input type="number" id="systolic_bp" placeholder="Enter Systolic BP">
-        </div>
-        <div class="form-group">
-            <label for="diastolic_bp">Diastolic Blood Pressure (DBP)</label>
-            <input type="number" id="diastolic_bp" placeholder="Enter Diastolic BP">
-        </div>
-        <div class="form-group">
-            <label for="fasting_blood_sugar">Fasting Blood Sugar (FBS)</label>
-            <input type="number" id="fasting_blood_sugar" placeholder="Enter Fasting Blood Sugar">
-        </div>
-        <div class="form-group">
-            <label for="hba1c">HbA1c</label>
-            <input type="number" id="hba1c" placeholder="Enter HbA1c">
-        </div>
-        <div class="form-group">
-            <label for="serum_creatinine">Serum Creatinine (mg/dL)</label>
-            <input type="number" id="serum_creatinine" placeholder="Enter Serum Creatinine">
-        </div>
-        <div class="form-group">
-            <label for="bun_levels">BUN Levels (mg/dL)</label>
-            <input type="number" id="bun_levels" placeholder="Enter BUN Levels">
-        </div>
-        <div class="form-group">
-            <label for="cholesterol_total">Cholesterol Total (mg/dL)</label>
-            <input type="number" id="cholesterol_total" placeholder="Enter Total Cholesterol">
-        </div>
-        <div class="form-group">
-            <label for="cholesterol_ldl">Cholesterol LDL (mg/dL)</label>
-            <input type="number" id="cholesterol_ldl" placeholder="Enter LDL Cholesterol">
-        </div>
-        <div class="form-group">
-            <label for="cholesterol_hdl">Cholesterol HDL (mg/dL)</label>
-            <input type="number" id="cholesterol_hdl" placeholder="Enter HDL Cholesterol">
-        </div>
-        <div class="form-group">
-            <label for="cholesterol_triglycerides">Cholesterol Triglycerides (mg/dL)</label>
-            <input type="number" id="cholesterol_triglycerides" placeholder="Enter Triglycerides">
-        </div>
-        <div class="form-group">
-            <label for="antihypertensive_medications">Antihypertensive Medications</label>
-            <select id="antihypertensive_medications">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="statins">Statins</label>
-            <select id="statins">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="antidiabetic_medications">Antidiabetic Medications</label>
-            <select id="antidiabetic_medications">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="frequent_urination">Frequent Urination</label>
-            <select id="frequent_urination">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="excessive_thirst">Excessive Thirst</label>
-            <select id="excessive_thirst">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="unexplained_weight_loss">Unexplained Weight Loss</label>
-            <select id="unexplained_weight_loss">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="fatigue_levels">Fatigue Levels (0-10)</label>
-            <input type="number" id="fatigue_levels" min="0" max="10" placeholder="Enter Fatigue Level">
-        </div>
-        <div class="form-group">
-            <label for="blurred_vision">Blurred Vision</label>
-            <select id="blurred_vision">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="slow_healing_sores">Slow Healing Sores</label>
-            <select id="slow_healing_sores">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="tingling_hands_feet">Tingling Hands/Feet</label>
-            <select id="tingling_hands_feet">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="quality_of_life_score">Quality of Life Score (0-100)</label>
-            <input type="number" id="quality_of_life_score" min="0" max="100" placeholder="Enter Quality of Life Score">
-        </div>
-        <div class="form-group">
-            <label for="heavy_metals_exposure">Heavy Metals Exposure</label>
-            <select id="heavy_metals_exposure">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="occupational_exposure_chemicals">Occupational Exposure to Chemicals</label>
-            <select id="occupational_exposure_chemicals">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="water_quality">Water Quality</label>
-            <select id="water_quality">
-                <option value="0">Good</option>
-                <option value="1">Poor</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="medical_checkups_frequency">Medical Checkups Frequency (per year)</label>
-            <input type="number" id="medical_checkups_frequency" min="0" max="4" placeholder="Enter Frequency">
-        </div>
-        <div class="form-group">
-            <label for="medication_adherence">Medication Adherence (0-10)</label>
-            <input type="number" id="medication_adherence" min="0" max="10" placeholder="Enter Adherence Score">
-        </div>
-        <div class="form-group">
-            <label for="health_literacy">Health Literacy (0-10)</label>
-            <input type="number" id="health_literacy" min="0" max="10" placeholder="Enter Health Literacy Score">
-        </div>
-        
-        <button class="btn" onclick="predict()">Predict Diabetes</button>
-        <div class="result" id="result"></div>
+ <!--  <header>
+    <div class="logo">
+      <span class="accent">Med</span>Hub
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script>
-        let model;
-        
-        // Load the model
-        async function loadModel() {
-            model = await tf.loadGraphModel('model/model.json');
+  </header>Personal Information Section -->
+
+  <div class="container">
+    <div class="form-header">
+      <h1>DAS medhub Diabetes Risk Assessment</h1>
+      <p>Complete the following form to assess diabetes risk factors</p>
+    </div>
+
+    <div class="form-grid">
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h3>Personal Information</h3>
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" placeholder="Enter age" min="18" max="100" />
+        </div>
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender">
+            <option value="0">Male</option>
+            <option value="1">Female</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="ethnicity">Ethnicity</label>
+          <select id="ethnicity">
+            <option value="0">Caucasian</option>
+            <option value="1">African American</option>
+            <option value="2">Asian</option>
+            <option value="3">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="socioeconomic_status">Socioeconomic Status</label>
+          <select id="socioeconomic_status">
+            <option value="0">Low</option>
+            <option value="1">Middle</option>
+            <option value="2">High</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="education_level">Education Level</label>
+          <select id="education_level">
+            <option value="0">None</option>
+            <option value="1">High School</option>
+            <option value="2">Bachelor's</option>
+            <option value="3">Higher</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Health Metrics Section -->
+      <div class="form-section">
+        <h3>Health Metrics</h3>
+        <div class="form-group">
+          <label for="bmi">BMI</label>
+          <input type="number" id="bmi" placeholder="Enter BMI" step="0.1" />
+          <span class="input-hint">Normal range: 18.5 - 24.9</span>
+        </div>
+        <div class="form-group">
+          <label for="systolic_bp">Systolic BP</label>
+          <input type="number" id="systolic_bp" placeholder="Enter systolic BP" />
+        </div>
+        <div class="form-group">
+          <label for="diastolic_bp">Diastolic BP</label>
+          <input type="number" id="diastolic_bp" placeholder="Enter diastolic BP" />
+        </div>
+      </div>
+
+      <!-- Lifestyle Factors Section -->
+      <div class="form-section">
+        <h3>Lifestyle Factors</h3>
+        <div class="form-group">
+          <label for="smoking">Smoking</label>
+          <select id="smoking">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="alcohol_consumption">Alcohol Consumption (units/week)</label>
+          <input type="number" id="alcohol_consumption" placeholder="Enter alcohol consumption" min="0" max="20" />
+        </div>
+        <div class="form-group">
+          <label for="physical_activity">Physical Activity (hrs/week)</label>
+          <input type="number" id="physical_activity" placeholder="Enter hours" min="0" max="168" />
+          <span class="input-hint">Recommended: ≥2.5 hours</span>
+        </div>
+        <div class="form-group">
+          <label for="diet_quality">Diet Quality (0-10)</label>
+          <input type="number" id="diet_quality" placeholder="Enter diet quality" min="0" max="10" />
+        </div>
+        <div class="form-group">
+          <label for="sleep_quality">Sleep Quality (4-10)</label>
+          <input type="number" id="sleep_quality" placeholder="Enter sleep quality" min="4" max="10" />
+        </div>
+      </div>
+
+      <!-- Medical History Section -->
+      <div class="form-section">
+        <h3>Medical History</h3>
+        <div class="form-group">
+          <label for="family_history_diabetes">Family History of Diabetes</label>
+          <select id="family_history_diabetes">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="gestational_diabetes">Gestational Diabetes</label>
+          <select id="gestational_diabetes">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="polycystic_ovary_syndrome">Polycystic Ovary Syndrome</label>
+          <select id="polycystic_ovary_syndrome">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="previous_pre_diabetes">Previous Pre-Diabetes</label>
+          <select id="previous_pre_diabetes">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="hypertension">Hypertension</label>
+          <select id="hypertension">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Laboratory Tests Section -->
+      <div class="form-section">
+        <h3>Laboratory Tests</h3>
+        <div class="form-group">
+          <label for="fasting_blood_sugar">Fasting Blood Sugar (FBS)</label>
+          <input type="number" id="fasting_blood_sugar" placeholder="Enter FBS" />
+        </div>
+        <div class="form-group">
+          <label for="hba1c">HbA1c</label>
+          <input type="number" id="hba1c" placeholder="Enter HbA1c" />
+        </div>
+        <div class="form-group">
+          <label for="serum_creatinine">Serum Creatinine (mg/dL)</label>
+          <input type="number" id="serum_creatinine" placeholder="Enter Serum Creatinine" />
+        </div>
+        <div class="form-group">
+          <label for="bun_levels">BUN Levels (mg/dL)</label>
+          <input type="number" id="bun_levels" placeholder="Enter BUN Levels" />
+        </div>
+        <div class="form-group">
+          <label for="cholesterol_total">Cholesterol Total (mg/dL)</label>
+          <input type="number" id="cholesterol_total" placeholder="Enter Total Cholesterol" />
+        </div>
+        <div class="form-group">
+          <label for="cholesterol_ldl">Cholesterol LDL (mg/dL)</label>
+          <input type="number" id="cholesterol_ldl" placeholder="Enter LDL Cholesterol" />
+        </div>
+        <div class="form-group">
+          <label for="cholesterol_hdl">Cholesterol HDL (mg/dL)</label>
+          <input type="number" id="cholesterol_hdl" placeholder="Enter HDL Cholesterol" />
+        </div>
+        <div class="form-group">
+          <label for="cholesterol_triglycerides">Cholesterol Triglycerides (mg/dL)</label>
+          <input type="number" id="cholesterol_triglycerides" placeholder="Enter Triglycerides" />
+        </div>
+      </div>
+
+      <!-- Medications Section -->
+      <div class="form-section">
+        <h3>Medications</h3>
+        <div class="form-group">
+          <label for="antihypertensive_medications">Antihypertensive Medications</label>
+          <select id="antihypertensive_medications">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="statins">Statins</label>
+          <select id="statins">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="antidiabetic_medications">Antidiabetic Medications</label>
+          <select id="antidiabetic_medications">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Symptoms Section -->
+      <div class="form-section">
+        <h3>Symptoms</h3>
+        <div class="form-group">
+          <label for="frequent_urination">Frequent Urination</label>
+          <select id="frequent_urination">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="excessive_thirst">Excessive Thirst</label>
+          <select id="excessive_thirst">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="unexplained_weight_loss">Unexplained Weight Loss</label>
+          <select id="unexplained_weight_loss">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fatigue_levels">Fatigue Levels (0-10)</label>
+          <input type="number" id="fatigue_levels" placeholder="Enter Fatigue Level" min="0" max="10" />
+        </div>
+        <div class="form-group">
+          <label for="blurred_vision">Blurred Vision</label>
+          <select id="blurred_vision">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="slow_healing_sores">Slow Healing Sores</label>
+          <select id="slow_healing_sores">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="tingling_hands_feet">Tingling Hands/Feet</label>
+          <select id="tingling_hands_feet">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Additional Factors Section -->
+      <div class="form-section">
+        <h3>Additional Factors</h3>
+        <div class="form-group">
+          <label for="quality_of_life_score">Quality of Life Score (0-100)</label>
+          <input type="number" id="quality_of_life_score" placeholder="Enter Quality of Life Score" min="0" max="100" />
+        </div>
+        <div class="form-group">
+          <label for="heavy_metals_exposure">Heavy Metals Exposure</label>
+          <select id="heavy_metals_exposure">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="occupational_exposure_chemicals">Occupational Exposure to Chemicals</label>
+          <select id="occupational_exposure_chemicals">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="water_quality">Water Quality</label>
+          <select id="water_quality">
+            <option value="0">Good</option>
+            <option value="1">Poor</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="medical_checkups_frequency">Medical Checkups Frequency (per year)</label>
+          <input type="number" id="medical_checkups_frequency" placeholder="Enter frequency" min="0" max="4" />
+        </div>
+        <div class="form-group">
+          <label for="medication_adherence">Medication Adherence (0-10)</label>
+          <input type="number" id="medication_adherence" placeholder="Enter adherence score" min="0" max="10" />
+        </div>
+        <div class="form-group">
+          <label for="health_literacy">Health Literacy (0-10)</label>
+          <input type="number" id="health_literacy" placeholder="Enter health literacy score" min="0" max="10" />
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="predict()">
+      <span>Analyze Risk Factors</span>
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+      </svg>
+    </button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script>
+    const loading = document.getElementById('loading');
+    const resultDiv = document.getElementById('result');
+
+    // Mean and standard deviation values for normalization
+    const mean = [55.0431080, 0.487493348, 0.755721128, 0.992017030, 1.69930814, 27.6876014, 0.281532730, 10.0965873, 5.20079042, 4.89580107, 7.02132836, 0.238424694, 0.0995210218, 0.0447046301, 0.153805216, 0.153273018, 134.050559, 89.8637573, 135.204490, 6.97613340, 2.78459017, 27.7981535, 225.006464, 124.656831, 60.0609437, 227.386167, 0.285790314, 0.403938265, 0.278339542, 0.197445450, 0.193187866, 0.109632783, 4.94900276, 0.0952634380, 0.102714210, 0.111229377, 48.5086433, 0.0521554018, 0.103246408, 0.200638638, 1.99710103, 4.95753939, 5.01173646];
+    const stdDev = [20.51037859, 0.49984356, 1.04727935, 0.76473646, 0.88542966, 7.18906146, 0.44974665, 5.91264209, 2.85625133, 2.86638106, 1.72900894, 0.42612012, 0.29936030, 0.20665461, 0.36076193, 0.36025047, 25.60701279, 17.3234748, 37.50576594, 1.73890229, 1.30767444, 12.79739036, 43.3556288, 42.89972524, 23.31047652, 101.0446796, 0.45179001, 0.49068538, 0.44818148, 0.39807128, 0.39479908, 0.31243149, 2.88371575, 0.29357847, 0.30358524, 0.31441597, 28.75083417, 0.22234032, 0.30428044, 0.40047818, 1.12233295, 2.91015882, 2.92013104];
+
+    let model;
+
+    // Load the TensorFlow.js model
+    async function loadModel() {
+      model = await tf.loadGraphModel('model/model.json'); // Update path as needed
+    }
+    loadModel();
+
+    async function predict() {
+      try {
+        loading.style.display = 'flex';
+        resultDiv.innerHTML = '';
+
+        // Collect input values in the required order
+        const inputs = [
+          parseFloat(document.getElementById("age").value),
+          parseFloat(document.getElementById("gender").value),
+          parseFloat(document.getElementById("ethnicity").value),
+          parseFloat(document.getElementById("socioeconomic_status").value),
+          parseFloat(document.getElementById("education_level").value),
+          parseFloat(document.getElementById("bmi").value),
+          parseFloat(document.getElementById("smoking").value),
+          parseFloat(document.getElementById("alcohol_consumption").value),
+          parseFloat(document.getElementById("physical_activity").value),
+          parseFloat(document.getElementById("diet_quality").value),
+          parseFloat(document.getElementById("sleep_quality").value),
+          parseFloat(document.getElementById("family_history_diabetes").value),
+          parseFloat(document.getElementById("gestational_diabetes").value),
+          parseFloat(document.getElementById("polycystic_ovary_syndrome").value),
+          parseFloat(document.getElementById("previous_pre_diabetes").value),
+          parseFloat(document.getElementById("hypertension").value),
+          parseFloat(document.getElementById("systolic_bp").value),
+          parseFloat(document.getElementById("diastolic_bp").value),
+          parseFloat(document.getElementById("fasting_blood_sugar").value),
+          parseFloat(document.getElementById("hba1c").value),
+          parseFloat(document.getElementById("serum_creatinine").value),
+          parseFloat(document.getElementById("bun_levels").value),
+          parseFloat(document.getElementById("cholesterol_total").value),
+          parseFloat(document.getElementById("cholesterol_ldl").value),
+          parseFloat(document.getElementById("cholesterol_hdl").value),
+          parseFloat(document.getElementById("cholesterol_triglycerides").value),
+          parseFloat(document.getElementById("antihypertensive_medications").value),
+          parseFloat(document.getElementById("statins").value),
+          parseFloat(document.getElementById("antidiabetic_medications").value),
+          parseFloat(document.getElementById("frequent_urination").value),
+          parseFloat(document.getElementById("excessive_thirst").value),
+          parseFloat(document.getElementById("unexplained_weight_loss").value),
+          parseFloat(document.getElementById("blurred_vision").value),
+          parseFloat(document.getElementById("slow_healing_sores").value),
+          parseFloat(document.getElementById("tingling_hands_feet").value),
+          parseFloat(document.getElementById("fatigue_levels").value),
+          parseFloat(document.getElementById("quality_of_life_score").value),
+          parseFloat(document.getElementById("heavy_metals_exposure").value),
+          parseFloat(document.getElementById("occupational_exposure_chemicals").value),
+          parseFloat(document.getElementById("water_quality").value),
+          parseFloat(document.getElementById("medical_checkups_frequency").value),
+          parseFloat(document.getElementById("medication_adherence").value),
+          parseFloat(document.getElementById("health_literacy").value)
+        ];
+
+        // Validate inputs
+        if (inputs.some(isNaN)) {
+          throw new Error("Please fill out all fields before making a prediction.");
         }
-        loadModel();
-    
-        // Mean and standard deviation values for normalization
-        const mean = [55.0431080, 0.487493348, 0.755721128, 0.992017030, 1.69930814, 27.6876014, 0.281532730, 10.0965873, 5.20079042, 4.89580107, 7.02132836, 0.238424694, 0.0995210218, 0.0447046301, 0.153805216, 0.153273018, 134.050559, 89.8637573, 135.204490, 6.97613340, 2.78459017, 27.7981535, 225.006464, 124.656831, 60.0609437, 227.386167, 0.285790314, 0.403938265, 0.278339542, 0.197445450, 0.193187866, 0.109632783, 4.94900276, 0.0952634380, 0.102714210, 0.111229377, 48.5086433, 0.0521554018, 0.103246408, 0.200638638, 1.99710103, 4.95753939, 5.01173646];
-    
-        const stdDev = [20.51037859, 0.49984356, 1.04727935, 0.76473646, 0.88542966, 7.18906146, 0.44974665, 5.91264209, 2.85625133, 2.86638106, 1.72900894, 0.42612012, 0.29936030, 0.20665461, 0.36076193, 0.36025047, 25.60701279, 17.3234748, 37.50576594, 1.73890229, 1.30767444, 12.79739036, 43.3556288, 42.89972524, 23.31047652, 101.0446796, 0.45179001, 0.49068538, 0.44818148, 0.39807128, 0.39479908, 0.31243149, 2.88371575, 0.29357847, 0.30358524, 0.31441597, 28.75083417, 0.22234032, 0.30428044, 0.40047818, 1.12233295, 2.91015882, 2.92013104];
-    
-        function predict() {
-            // Collecting the input values from the user
-            const inputs = [
-                parseFloat(document.getElementById("age").value),
-                parseFloat(document.getElementById("gender").value), 
-                parseFloat(document.getElementById("ethnicity").value), 
-                parseFloat(document.getElementById("socioeconomic_status").value), 
-                parseFloat(document.getElementById("education_level").value), 
-                parseFloat(document.getElementById("bmi").value),
-                parseFloat(document.getElementById("smoking").value), 
-                parseFloat(document.getElementById("alcohol_consumption").value),
-                parseFloat(document.getElementById("physical_activity").value),
-                parseFloat(document.getElementById("diet_quality").value),
-                parseFloat(document.getElementById("sleep_quality").value),
-                parseFloat(document.getElementById("family_history_diabetes").value), 
-                parseFloat(document.getElementById("gestational_diabetes").value), 
-                parseFloat(document.getElementById("polycystic_ovary_syndrome").value), 
-                parseFloat(document.getElementById("previous_pre_diabetes").value), 
-                parseFloat(document.getElementById("hypertension").value), 
-                parseFloat(document.getElementById("systolic_bp").value),
-                parseFloat(document.getElementById("diastolic_bp").value),
-                parseFloat(document.getElementById("fasting_blood_sugar").value),
-                parseFloat(document.getElementById("hba1c").value),
-                parseFloat(document.getElementById("serum_creatinine").value),
-                parseFloat(document.getElementById("bun_levels").value),
-                parseFloat(document.getElementById("cholesterol_total").value),
-                parseFloat(document.getElementById("cholesterol_ldl").value),
-                parseFloat(document.getElementById("cholesterol_hdl").value),
-                parseFloat(document.getElementById("cholesterol_triglycerides").value),
-                parseFloat(document.getElementById("antihypertensive_medications").value), 
-                parseFloat(document.getElementById("statins").value), 
-                parseFloat(document.getElementById("antidiabetic_medications").value), 
-                parseFloat(document.getElementById("frequent_urination").value), 
-                parseFloat(document.getElementById("excessive_thirst").value), 
-                parseFloat(document.getElementById("unexplained_weight_loss").value), 
-                parseFloat(document.getElementById("blurred_vision").value), 
-                parseFloat(document.getElementById("slow_healing_sores").value), 
-                parseFloat(document.getElementById("tingling_hands_feet").value), 
-                parseFloat(document.getElementById("fatigue_levels").value),
-                parseFloat(document.getElementById("quality_of_life_score").value),
-                parseFloat(document.getElementById("heavy_metals_exposure").value), 
-                parseFloat(document.getElementById("occupational_exposure_chemicals").value), 
-                parseFloat(document.getElementById("water_quality").value), 
-                parseFloat(document.getElementById("medical_checkups_frequency").value),
-                parseFloat(document.getElementById("medication_adherence").value),
-                parseFloat(document.getElementById("health_literacy").value),
-            ];
-    
-            // Check if all inputs are provided
-            if (inputs.some(isNaN)) {
-                alert("Please fill out all fields before making a prediction.");
-                return;
-            }
-    
-            // Standardize the input data
-            const standardizedInputs = inputs.map((value, index) => (value - mean[index]) / stdDev[index]);
-    
-            // Convert the inputs to a tensor
-            const inputTensor = tf.tensor([standardizedInputs]);
-    
-            // Make prediction using the model
-            const prediction = model.predict(inputTensor).dataSync()[0];
-    
-            // Display the result
-            const resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = prediction > 0.5 ? `<b style="color:red;">Diabetes Detected</b>` : `<b style="color:green;">No Diabetes Detected</b>`;
-        }
-    </script>
-    
+
+        // Standardize the inputs
+        const standardizedInputs = inputs.map((value, index) => (value - mean[index]) / stdDev[index]);
+
+        // Create tensor and get prediction
+        const inputTensor = tf.tensor2d([standardizedInputs]);
+        const prediction = model.predict(inputTensor).dataSync()[0];
+
+        // Display the result
+        resultDiv.className = `result ${prediction > 0.5 ? 'positive' : 'negative'}`;
+        resultDiv.innerHTML =
+          prediction > 0.5
+            ? 'Elevated Risk Detected - Recommend Professional Consultation'
+            : 'Low Risk Profile - Maintain Healthy Lifestyle';
+      } catch (error) {
+        resultDiv.className = 'result positive';
+        resultDiv.innerHTML = error.message || 'Error processing request. Please try again.';
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+  </script>
 </body>
 </html>
