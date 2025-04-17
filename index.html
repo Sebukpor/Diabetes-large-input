@@ -4,133 +4,316 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Diabetes Risk Assessment | MedHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Improved UI/UX CSS */
+    /* Modern UI/UX CSS */
+    :root {
+      --primary: #2e7d32;
+      --primary-light: #60ad5e;
+      --primary-dark: #005005;
+      --secondary: #ff7f50;
+      --danger: #d32f2f;
+      --warning: #ffa000;
+      --success: #388e3c;
+      --light-gray: #f5f5f5;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #616161;
+      --white: #ffffff;
+      --text: #212121;
+      --text-light: #757575;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f9fb;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light-gray);
       margin: 0;
       padding: 0;
+      color: var(--text);
+      line-height: 1.6;
     }
+    
     header {
-      background-color: #28a745;
+      background-color: var(--primary);
       padding: 20px;
       text-align: center;
-      color: white;
-      font-size: 2em;
+      color: var(--white);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+    
+    .logo {
+      font-size: 2em;
+      font-weight: 600;
+    }
+    
     .logo .accent {
-      color: #ff7f50;
+      color: var(--secondary);
       font-weight: bold;
     }
+    
     .container {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 30px;
+      background-color: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     }
+    
     .form-header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
+    
+    .form-header h1 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    
+    .form-header p {
+      color: var(--text-light);
+      font-size: 1.1em;
+    }
+    
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
     }
+    
     .form-section {
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 5px;
+      border: 1px solid var(--medium-gray);
+      padding: 20px;
+      border-radius: 8px;
+      background-color: var(--white);
+      transition: all 0.3s ease;
     }
+    
+    .form-section:hover {
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      border-color: var(--primary-light);
+    }
+    
     .form-section h3 {
       margin-top: 0;
-      color: #28a745;
+      color: var(--primary);
+      font-weight: 500;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--medium-gray);
     }
+    
     .form-group {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
+    
     .form-group label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text);
     }
+    
     .form-group input,
     .form-group select {
       width: 100%;
-      padding: 8px;
+      padding: 12px;
       font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      border: 1px solid var(--medium-gray);
+      border-radius: 6px;
+      transition: border 0.3s;
+      background-color: var(--light-gray);
     }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+    }
+    
     .input-hint {
-      font-size: 12px;
-      color: #777;
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 5px;
+      display: block;
     }
+    
     .btn {
-      background-color: #28a745;
-      color: white;
+      background-color: var(--primary);
+      color: var(--white);
       border: none;
-      padding: 12px 20px;
+      padding: 15px 30px;
       font-size: 18px;
-      border-radius: 5px;
+      font-weight: 500;
+      border-radius: 8px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin: 20px auto;
+      margin: 30px auto;
+      transition: all 0.3s;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
     }
+    
     .btn:hover {
-      background-color: #218838;
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.15);
     }
-    .result {
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .result-container {
       text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 8px;
+      display: none;
+    }
+    
+    .result-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .result-message {
       font-size: 18px;
+      margin-bottom: 20px;
+    }
+    
+    .result-details {
+      background-color: var(--light-gray);
+      padding: 15px;
+      border-radius: 8px;
       margin-top: 20px;
+      text-align: left;
     }
-    .result.positive {
-      color: red;
+    
+    .result-diabetes {
+      background-color: rgba(211, 47, 47, 0.1);
+      border-left: 5px solid var(--danger);
     }
-    .result.negative {
-      color: green;
+    
+    .result-prediabetes {
+      background-color: rgba(255, 160, 0, 0.1);
+      border-left: 5px solid var(--warning);
     }
+    
+    .result-nondiabetes {
+      background-color: rgba(56, 142, 60, 0.1);
+      border-left: 5px solid var(--success);
+    }
+    
+    .risk-meter {
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(90deg, var(--success) 0%, var(--warning) 50%, var(--danger) 100%);
+      border-radius: 10px;
+      margin: 20px 0;
+      position: relative;
+    }
+    
+    .risk-indicator {
+      position: absolute;
+      top: -5px;
+      width: 10px;
+      height: 30px;
+      background-color: var(--white);
+      border: 2px solid var(--text);
+      border-radius: 5px;
+      transform: translateX(-50%);
+    }
+    
+    .risk-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-size: 14px;
+      color: var(--text-light);
+    }
+    
     .loading {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.9);
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      flex-direction: column;
     }
+    
     .spinner {
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid #28a745;
+      border: 8px solid var(--medium-gray);
+      border-top: 8px solid var(--primary);
       border-radius: 50%;
       width: 60px;
       height: 60px;
       animation: spin 1s linear infinite;
+      margin-bottom: 20px;
     }
+    
+    .loading-text {
+      font-size: 18px;
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    
+    .recommendations {
+      margin-top: 20px;
+      text-align: left;
+    }
+    
+    .recommendations h4 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    
+    .recommendations ul {
+      padding-left: 20px;
+    }
+    
+    .recommendations li {
+      margin-bottom: 8px;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        margin: 15px;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
- <!--  <header>
+ <!-- <header>
     <div class="logo">
-      <span class="accent">Med</span>Hub
+      <span class="accent">Med</span>Hub Diabetes Risk Assessment
     </div>
-  </header>Personal Information Section -->
+  </header> -->
 
   <div class="container">
     <div class="form-header">
-      <h1>DAS medhub Diabetes Risk Assessment</h1>
-      <p>Complete the following form to assess diabetes risk factors</p>
+      <h1>Diabetes Risk Assessment</h1>
+      <p>Complete the following form to evaluate your diabetes risk factors</p>
     </div>
 
     <div class="form-grid">
@@ -139,7 +322,7 @@
         <h3>Personal Information</h3>
         <div class="form-group">
           <label for="age">Age</label>
-          <input type="number" id="age" placeholder="Enter age" min="18" max="100" />
+          <input type="number" id="age" placeholder="Enter your age" min="18" max="100" />
         </div>
         <div class="form-group">
           <label for="gender">Gender</label>
@@ -180,17 +363,19 @@
       <div class="form-section">
         <h3>Health Metrics</h3>
         <div class="form-group">
-          <label for="bmi">BMI</label>
-          <input type="number" id="bmi" placeholder="Enter BMI" step="0.1" />
+          <label for="bmi">BMI (Body Mass Index)</label>
+          <input type="number" id="bmi" placeholder="Enter your BMI" step="0.1" />
           <span class="input-hint">Normal range: 18.5 - 24.9</span>
         </div>
         <div class="form-group">
-          <label for="systolic_bp">Systolic BP</label>
+          <label for="systolic_bp">Systolic Blood Pressure (mmHg)</label>
           <input type="number" id="systolic_bp" placeholder="Enter systolic BP" />
+          <span class="input-hint">Normal: &lt;120 mmHg</span>
         </div>
         <div class="form-group">
-          <label for="diastolic_bp">Diastolic BP</label>
+          <label for="diastolic_bp">Diastolic Blood Pressure (mmHg)</label>
           <input type="number" id="diastolic_bp" placeholder="Enter diastolic BP" />
+          <span class="input-hint">Normal: &lt;80 mmHg</span>
         </div>
       </div>
 
@@ -198,7 +383,7 @@
       <div class="form-section">
         <h3>Lifestyle Factors</h3>
         <div class="form-group">
-          <label for="smoking">Smoking</label>
+          <label for="smoking">Do you smoke?</label>
           <select id="smoking">
             <option value="0">No</option>
             <option value="1">Yes</option>
@@ -206,20 +391,23 @@
         </div>
         <div class="form-group">
           <label for="alcohol_consumption">Alcohol Consumption (units/week)</label>
-          <input type="number" id="alcohol_consumption" placeholder="Enter alcohol consumption" min="0" max="20" />
+          <input type="number" id="alcohol_consumption" placeholder="Enter units per week" min="0" max="20" />
+          <span class="input-hint">1 unit = 10ml pure alcohol</span>
         </div>
         <div class="form-group">
           <label for="physical_activity">Physical Activity (hrs/week)</label>
           <input type="number" id="physical_activity" placeholder="Enter hours" min="0" max="168" />
-          <span class="input-hint">Recommended: ≥2.5 hours</span>
+          <span class="input-hint">Recommended: ≥2.5 hours moderate activity</span>
         </div>
         <div class="form-group">
           <label for="diet_quality">Diet Quality (0-10)</label>
-          <input type="number" id="diet_quality" placeholder="Enter diet quality" min="0" max="10" />
+          <input type="number" id="diet_quality" placeholder="Rate your diet quality" min="0" max="10" />
+          <span class="input-hint">10 = healthiest diet</span>
         </div>
         <div class="form-group">
           <label for="sleep_quality">Sleep Quality (4-10)</label>
-          <input type="number" id="sleep_quality" placeholder="Enter sleep quality" min="4" max="10" />
+          <input type="number" id="sleep_quality" placeholder="Rate your sleep quality" min="4" max="10" />
+          <span class="input-hint">10 = best sleep quality</span>
         </div>
       </div>
 
@@ -234,7 +422,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="gestational_diabetes">Gestational Diabetes</label>
+          <label for="gestational_diabetes">History of Gestational Diabetes</label>
           <select id="gestational_diabetes">
             <option value="0">No</option>
             <option value="1">Yes</option>
@@ -248,14 +436,14 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="previous_pre_diabetes">Previous Pre-Diabetes</label>
+          <label for="previous_pre_diabetes">Previous Pre-Diabetes Diagnosis</label>
           <select id="previous_pre_diabetes">
             <option value="0">No</option>
             <option value="1">Yes</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="hypertension">Hypertension</label>
+          <label for="hypertension">Hypertension (High Blood Pressure)</label>
           <select id="hypertension">
             <option value="0">No</option>
             <option value="1">Yes</option>
@@ -267,58 +455,64 @@
       <div class="form-section">
         <h3>Laboratory Tests</h3>
         <div class="form-group">
-          <label for="fasting_blood_sugar">Fasting Blood Sugar (FBS)</label>
-          <input type="number" id="fasting_blood_sugar" placeholder="Enter FBS" />
+          <label for="fasting_blood_sugar">Fasting Blood Sugar (mg/dL)</label>
+          <input type="number" id="fasting_blood_sugar" placeholder="Enter FBS value" />
+          <span class="input-hint">Normal: &lt;100 mg/dL</span>
         </div>
         <div class="form-group">
-          <label for="hba1c">HbA1c</label>
-          <input type="number" id="hba1c" placeholder="Enter HbA1c" />
+          <label for="hba1c">HbA1c (%)</label>
+          <input type="number" id="hba1c" placeholder="Enter HbA1c value" step="0.1" />
+          <span class="input-hint">Normal: &lt;5.7%</span>
         </div>
         <div class="form-group">
           <label for="serum_creatinine">Serum Creatinine (mg/dL)</label>
-          <input type="number" id="serum_creatinine" placeholder="Enter Serum Creatinine" />
+          <input type="number" id="serum_creatinine" placeholder="Enter creatinine level" step="0.01" />
         </div>
         <div class="form-group">
           <label for="bun_levels">BUN Levels (mg/dL)</label>
-          <input type="number" id="bun_levels" placeholder="Enter BUN Levels" />
+          <input type="number" id="bun_levels" placeholder="Enter BUN value" />
         </div>
         <div class="form-group">
-          <label for="cholesterol_total">Cholesterol Total (mg/dL)</label>
-          <input type="number" id="cholesterol_total" placeholder="Enter Total Cholesterol" />
+          <label for="cholesterol_total">Total Cholesterol (mg/dL)</label>
+          <input type="number" id="cholesterol_total" placeholder="Enter total cholesterol" />
+          <span class="input-hint">Desirable: &lt;200 mg/dL</span>
         </div>
         <div class="form-group">
-          <label for="cholesterol_ldl">Cholesterol LDL (mg/dL)</label>
-          <input type="number" id="cholesterol_ldl" placeholder="Enter LDL Cholesterol" />
+          <label for="cholesterol_ldl">LDL Cholesterol (mg/dL)</label>
+          <input type="number" id="cholesterol_ldl" placeholder="Enter LDL value" />
+          <span class="input-hint">Optimal: &lt;100 mg/dL</span>
         </div>
         <div class="form-group">
-          <label for="cholesterol_hdl">Cholesterol HDL (mg/dL)</label>
-          <input type="number" id="cholesterol_hdl" placeholder="Enter HDL Cholesterol" />
+          <label for="cholesterol_hdl">HDL Cholesterol (mg/dL)</label>
+          <input type="number" id="cholesterol_hdl" placeholder="Enter HDL value" />
+          <span class="input-hint">Good: ≥60 mg/dL</span>
         </div>
         <div class="form-group">
-          <label for="cholesterol_triglycerides">Cholesterol Triglycerides (mg/dL)</label>
-          <input type="number" id="cholesterol_triglycerides" placeholder="Enter Triglycerides" />
+          <label for="cholesterol_triglycerides">Triglycerides (mg/dL)</label>
+          <input type="number" id="cholesterol_triglycerides" placeholder="Enter triglycerides" />
+          <span class="input-hint">Normal: &lt;150 mg/dL</span>
         </div>
       </div>
 
       <!-- Medications Section -->
       <div class="form-section">
-        <h3>Medications</h3>
+        <h3>Current Medications</h3>
         <div class="form-group">
-          <label for="antihypertensive_medications">Antihypertensive Medications</label>
+          <label for="antihypertensive_medications">Taking Antihypertensive Medications</label>
           <select id="antihypertensive_medications">
             <option value="0">No</option>
             <option value="1">Yes</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="statins">Statins</label>
+          <label for="statins">Taking Statins (Cholesterol Meds)</label>
           <select id="statins">
             <option value="0">No</option>
             <option value="1">Yes</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="antidiabetic_medications">Antidiabetic Medications</label>
+          <label for="antidiabetic_medications">Taking Antidiabetic Medications</label>
           <select id="antidiabetic_medications">
             <option value="0">No</option>
             <option value="1">Yes</option>
@@ -351,8 +545,9 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="fatigue_levels">Fatigue Levels (0-10)</label>
-          <input type="number" id="fatigue_levels" placeholder="Enter Fatigue Level" min="0" max="10" />
+          <label for="fatigue_levels">Fatigue Level (0-10)</label>
+          <input type="number" id="fatigue_levels" placeholder="Rate your fatigue" min="0" max="10" />
+          <span class="input-hint">10 = extreme fatigue</span>
         </div>
         <div class="form-group">
           <label for="blurred_vision">Blurred Vision</label>
@@ -369,7 +564,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="tingling_hands_feet">Tingling Hands/Feet</label>
+          <label for="tingling_hands_feet">Tingling in Hands/Feet</label>
           <select id="tingling_hands_feet">
             <option value="0">No</option>
             <option value="1">Yes</option>
@@ -381,8 +576,9 @@
       <div class="form-section">
         <h3>Additional Factors</h3>
         <div class="form-group">
-          <label for="quality_of_life_score">Quality of Life Score (0-100)</label>
-          <input type="number" id="quality_of_life_score" placeholder="Enter Quality of Life Score" min="0" max="100" />
+          <label for="quality_of_life_score">Quality of Life (0-100)</label>
+          <input type="number" id="quality_of_life_score" placeholder="Rate your quality of life" min="0" max="100" />
+          <span class="input-hint">100 = best quality</span>
         </div>
         <div class="form-group">
           <label for="heavy_metals_exposure">Heavy Metals Exposure</label>
@@ -392,7 +588,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="occupational_exposure_chemicals">Occupational Exposure to Chemicals</label>
+          <label for="occupational_exposure_chemicals">Occupational Chemical Exposure</label>
           <select id="occupational_exposure_chemicals">
             <option value="0">No</option>
             <option value="1">Yes</option>
@@ -406,38 +602,121 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="medical_checkups_frequency">Medical Checkups Frequency (per year)</label>
-          <input type="number" id="medical_checkups_frequency" placeholder="Enter frequency" min="0" max="4" />
+          <label for="medical_checkups_frequency">Medical Checkups (per year)</label>
+          <input type="number" id="medical_checkups_frequency" placeholder="Enter number of checkups" min="0" max="4" />
         </div>
         <div class="form-group">
           <label for="medication_adherence">Medication Adherence (0-10)</label>
-          <input type="number" id="medication_adherence" placeholder="Enter adherence score" min="0" max="10" />
+          <input type="number" id="medication_adherence" placeholder="Rate your adherence" min="0" max="10" />
+          <span class="input-hint">10 = perfect adherence</span>
         </div>
         <div class="form-group">
           <label for="health_literacy">Health Literacy (0-10)</label>
-          <input type="number" id="health_literacy" placeholder="Enter health literacy score" min="0" max="10" />
+          <input type="number" id="health_literacy" placeholder="Rate your health knowledge" min="0" max="10" />
+          <span class="input-hint">10 = excellent health literacy</span>
         </div>
       </div>
     </div>
 
     <button class="btn" onclick="predict()">
-      <span>Analyze Risk Factors</span>
+      <span>Assess My Diabetes Risk</span>
       <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
       </svg>
     </button>
 
-    <div class="result" id="result"></div>
+    <div class="result-container" id="result-diabetes">
+      <div class="risk-meter">
+        <div class="risk-indicator" style="left: 85%;"></div>
+      </div>
+      <div class="risk-labels">
+        <span>Low Risk</span>
+        <span>Pre-Diabetes</span>
+        <span>Diabetes</span>
+      </div>
+      <h2 class="result-title">High Diabetes Risk Detected</h2>
+      <p class="result-message">Your assessment indicates a high likelihood of diabetes.</p>
+      <div class="result-details">
+        <p><strong>Risk Level:</strong> High (Probability: <span id="diabetes-probability">85%</span>)</p>
+        <div class="recommendations">
+          <h4>Recommended Actions:</h4>
+          <ul>
+            <li>Consult with a healthcare provider immediately for confirmation</li>
+            <li>Schedule a comprehensive blood glucose test (FBS, HbA1c)</li>
+            <li>Begin monitoring your blood sugar levels regularly</li>
+            <li>Consider meeting with a diabetes educator</li>
+            <li>Review and modify your diet and exercise habits</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-container" id="result-prediabetes">
+      <div class="risk-meter">
+        <div class="risk-indicator" style="left: 50%;"></div>
+      </div>
+      <div class="risk-labels">
+        <span>Low Risk</span>
+        <span>Pre-Diabetes</span>
+        <span>Diabetes</span>
+      </div>
+      <h2 class="result-title">Pre-Diabetes Risk Detected</h2>
+      <p class="result-message">Your assessment indicates an elevated risk for developing diabetes.</p>
+      <div class="result-details">
+        <p><strong>Risk Level:</strong> Moderate (Probability: <span id="prediabetes-probability">50%</span>)</p>
+        <div class="recommendations">
+          <h4>Recommended Actions:</h4>
+          <ul>
+            <li>Schedule a consultation with your healthcare provider</li>
+            <li>Request a glucose tolerance test for confirmation</li>
+            <li>Increase physical activity to at least 150 minutes per week</li>
+            <li>Adopt a balanced diet focusing on whole foods</li>
+            <li>Lose 5-7% of body weight if overweight</li>
+            <li>Monitor your blood sugar levels periodically</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-container" id="result-nondiabetes">
+      <div class="risk-meter">
+        <div class="risk-indicator" style="left: 15%;"></div>
+      </div>
+      <div class="risk-labels">
+        <span>Low Risk</span>
+        <span>Pre-Diabetes</span>
+        <span>Diabetes</span>
+      </div>
+      <h2 class="result-title">Low Diabetes Risk</h2>
+      <p class="result-message">Your assessment indicates a low current risk for diabetes.</p>
+      <div class="result-details">
+        <p><strong>Risk Level:</strong> Low (Probability: <span id="nondiabetes-probability">15%</span>)</p>
+        <div class="recommendations">
+          <h4>Prevention Tips:</h4>
+          <ul>
+            <li>Maintain a healthy weight and BMI</li>
+            <li>Continue regular physical activity (≥150 min/week)</li>
+            <li>Eat a balanced diet rich in vegetables and whole grains</li>
+            <li>Limit processed foods and sugary beverages</li>
+            <li>Get regular health checkups</li>
+            <li>Monitor your risk factors annually</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="loading" id="loading">
     <div class="spinner"></div>
+    <div class="loading-text">Analyzing your risk factors...</div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
   <script>
     const loading = document.getElementById('loading');
-    const resultDiv = document.getElementById('result');
+    const diabetesResult = document.getElementById('result-diabetes');
+    const prediabetesResult = document.getElementById('result-prediabetes');
+    const nondiabetesResult = document.getElementById('result-nondiabetes');
 
     // Mean and standard deviation values for normalization
     const mean = [55.0431080, 0.487493348, 0.755721128, 0.992017030, 1.69930814, 27.6876014, 0.281532730, 10.0965873, 5.20079042, 4.89580107, 7.02132836, 0.238424694, 0.0995210218, 0.0447046301, 0.153805216, 0.153273018, 134.050559, 89.8637573, 135.204490, 6.97613340, 2.78459017, 27.7981535, 225.006464, 124.656831, 60.0609437, 227.386167, 0.285790314, 0.403938265, 0.278339542, 0.197445450, 0.193187866, 0.109632783, 4.94900276, 0.0952634380, 0.102714210, 0.111229377, 48.5086433, 0.0521554018, 0.103246408, 0.200638638, 1.99710103, 4.95753939, 5.01173646];
@@ -453,8 +732,11 @@
 
     async function predict() {
       try {
+        // Hide all results and show loading
+        diabetesResult.style.display = 'none';
+        prediabetesResult.style.display = 'none';
+        nondiabetesResult.style.display = 'none';
         loading.style.display = 'flex';
-        resultDiv.innerHTML = '';
 
         // Collect input values in the required order
         const inputs = [
@@ -514,20 +796,33 @@
         // Create tensor and get prediction
         const inputTensor = tf.tensor2d([standardizedInputs]);
         const prediction = model.predict(inputTensor).dataSync()[0];
+        const probability = Math.round(prediction * 100);
 
-        // Display the result
-        resultDiv.className = `result ${prediction > 0.5 ? 'positive' : 'negative'}`;
-        resultDiv.innerHTML =
-          prediction > 0.5
-            ? 'Elevated Risk Detected - Recommend Professional Consultation'
-            : 'Low Risk Profile - Maintain Healthy Lifestyle';
+        // Display the appropriate result based on probability
+        if (probability >= 70) {
+          // High risk (Diabetes)
+          document.getElementById('diabetes-probability').textContent = probability + '%';
+          diabetesResult.style.display = 'block';
+          document.querySelector('#result-diabetes .risk-indicator').style.left = '85%';
+        } else if (probability >= 40) {
+          // Moderate risk (Pre-diabetes)
+          document.getElementById('prediabetes-probability').textContent = probability + '%';
+          prediabetesResult.style.display = 'block';
+          document.querySelector('#result-prediabetes .risk-indicator').style.left = '50%';
+        } else {
+          // Low risk (Non-diabetes)
+          document.getElementById('nondiabetes-probability').textContent = probability + '%';
+          nondiabetesResult.style.display = 'block';
+          document.querySelector('#result-nondiabetes .risk-indicator').style.left = '15%';
+        }
+
+                // Scroll to results
+                document.querySelector('.result-container[style*="display: block"]').scrollIntoView({
+          behavior: 'smooth'
+        });
       } catch (error) {
-        resultDiv.className = 'result positive';
-        resultDiv.innerHTML = error.message || 'Error processing request. Please try again.';
+        alert(error.message);
       } finally {
         loading.style.display = 'none';
       }
     }
-  </script>
-</body>
-</html>
