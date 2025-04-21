@@ -726,9 +726,13 @@
 
     // Load the TensorFlow.js model
     async function loadModel() {
-      model = await tf.loadGraphModel('mode/model.json'); // Update path as needed
-    }
-    loadModel();
+  try {
+    model = await tf.loadGraphModel('mode/model.json'); // Corrected path
+    console.log("Model loaded successfully");
+  } catch (error) {
+    console.error("Error loading model:", error);
+  }
+}
 
     async function predict() {
       try {
