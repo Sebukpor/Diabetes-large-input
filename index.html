@@ -724,7 +724,7 @@
 
     let model;
 
-   // Load the TensorFlow.js model
+// Load the TensorFlow.js model
 async function loadModel() {
   try {
     // The path was incorrect - models are usually in a 'model' folder not 'mode'
@@ -812,36 +812,55 @@ async function predict() {
     // Create tensor and get prediction
     const inputTensor = tf.tensor2d([standardizedInputs]);
     
-    // Fixed prediction method - depending on the model type
-    let prediction;
+    // Get prediction from model
+    let outputTensor;
     if (model.predict) {
-      const outputTensor = model.predict(inputTensor);
-      prediction = await outputTensor.data();
+      outputTensor = model.predict(inputTensor);
     } else if (model.execute) {
-      const outputTensor = model.execute(inputTensor);
-      prediction = await outputTensor.data();
+      outputTensor = model.execute(inputTensor);
     } else {
       throw new Error("Incompatible model type");
     }
     
-    const probability = Math.round(prediction[0] * 100);
-
-    // Display the appropriate result based on probability
-    if (probability >= 70) {
-      // High risk (Diabetes)
-      document.getElementById('diabetes-probability').textContent = probability + '%';
-      diabetesResult.style.display = 'block';
-      document.querySelector('#result-diabetes .risk-indicator').style.left = probability + '%';
-    } else if (probability >= 40) {
-      // Moderate risk (Pre-diabetes)
-      document.getElementById('prediabetes-probability').textContent = probability + '%';
-      prediabetesResult.style.display = 'block';
-      document.querySelector('#result-prediabetes .risk-indicator').style.left = probability + '%';
+    const predictionData = await outputTensor.data();
+    const diabeticProb = predictionData[0]; // Raw probability from model output
+    
+    let riskCategory, resultClass, resultIcon, resultText, confidenceScore;
+    
+    // Apply specified analogy for confidence calculation
+    if (diabeticProb >= 0.70) {
+      riskCategory = "diabetic";
+      resultClass = "result-diabetes";
+      resultText = "High Diabetes Risk";
+      confidenceScore = diabeticProb * 100; // 70-100% confidence in diabetic
+    } else if (diabeticProb >= 0.40) {
+      riskCategory = "prediabetic";
+      resultClass = "result-prediabetes";
+      resultText = "Moderate Diabetes Risk";
+      confidenceScore = diabeticProb * 100; // 40-69% confidence in prediabetic
     } else {
-      // Low risk (Non-diabetes)
-      document.getElementById('nondiabetes-probability').textContent = probability + '%';
+      riskCategory = "non-diabetic";
+      resultClass = "result-nondiabetes";
+      resultText = "Low Diabetes Risk";
+      confidenceScore = (1 - diabeticProb) * 100; // Confidence in being non-diabetic
+    }
+    
+    // Round the confidence score for display
+    const roundedConfidence = Math.round(confidenceScore);
+    
+    // Update the appropriate display elements
+    if (riskCategory === "diabetic") {
+      document.getElementById('diabetes-probability').textContent = roundedConfidence + '%';
+      diabetesResult.style.display = 'block';
+      document.querySelector('#result-diabetes .risk-indicator').style.left = (diabeticProb * 100) + '%';
+    } else if (riskCategory === "prediabetic") {
+      document.getElementById('prediabetes-probability').textContent = roundedConfidence + '%';
+      prediabetesResult.style.display = 'block';
+      document.querySelector('#result-prediabetes .risk-indicator').style.left = (diabeticProb * 100) + '%';
+    } else {
+      document.getElementById('nondiabetes-probability').textContent = roundedConfidence + '%';
       nondiabetesResult.style.display = 'block';
-      document.querySelector('#result-nondiabetes .risk-indicator').style.left = probability + '%';
+      document.querySelector('#result-nondiabetes .risk-indicator').style.left = (diabeticProb * 100) + '%';
     }
 
     // Scroll to results
@@ -851,6 +870,7 @@ async function predict() {
     
     // Release memory
     inputTensor.dispose();
+    outputTensor.dispose();
     
   } catch (error) {
     alert(error.message);
