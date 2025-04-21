@@ -728,7 +728,7 @@
 async function loadModel() {
   try {
     // The path was incorrect - models are usually in a 'model' folder not 'mode'
-    model = await tf.loadLayersModel('model/model.json');
+    model = await tf.loadLayersModel('mode/model.json');
     console.log("Model loaded successfully");
   } catch (error) {
     console.error("Error loading model:", error);
