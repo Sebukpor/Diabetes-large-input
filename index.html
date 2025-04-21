@@ -724,112 +724,141 @@
 
     let model;
 
-    // Load the TensorFlow.js model
-    async function loadModel() {
+   // Load the TensorFlow.js model
+async function loadModel() {
   try {
-    model = await tf.loadGraphModel('mode/model.json'); // Corrected path
+    // The path was incorrect - models are usually in a 'model' folder not 'mode'
+    model = await tf.loadLayersModel('model/model.json');
     console.log("Model loaded successfully");
   } catch (error) {
     console.error("Error loading model:", error);
+    alert("Failed to load the prediction model. Please check your connection and try again.");
   }
 }
 
-    async function predict() {
-      try {
-        // Hide all results and show loading
-        diabetesResult.style.display = 'none';
-        prediabetesResult.style.display = 'none';
-        nondiabetesResult.style.display = 'none';
-        loading.style.display = 'flex';
+// Initialize the model when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  loadModel();
+});
 
-        // Collect input values in the required order
-        const inputs = [
-          parseFloat(document.getElementById("age").value),
-          parseFloat(document.getElementById("gender").value),
-          parseFloat(document.getElementById("ethnicity").value),
-          parseFloat(document.getElementById("socioeconomic_status").value),
-          parseFloat(document.getElementById("education_level").value),
-          parseFloat(document.getElementById("bmi").value),
-          parseFloat(document.getElementById("smoking").value),
-          parseFloat(document.getElementById("alcohol_consumption").value),
-          parseFloat(document.getElementById("physical_activity").value),
-          parseFloat(document.getElementById("diet_quality").value),
-          parseFloat(document.getElementById("sleep_quality").value),
-          parseFloat(document.getElementById("family_history_diabetes").value),
-          parseFloat(document.getElementById("gestational_diabetes").value),
-          parseFloat(document.getElementById("polycystic_ovary_syndrome").value),
-          parseFloat(document.getElementById("previous_pre_diabetes").value),
-          parseFloat(document.getElementById("hypertension").value),
-          parseFloat(document.getElementById("systolic_bp").value),
-          parseFloat(document.getElementById("diastolic_bp").value),
-          parseFloat(document.getElementById("fasting_blood_sugar").value),
-          parseFloat(document.getElementById("hba1c").value),
-          parseFloat(document.getElementById("serum_creatinine").value),
-          parseFloat(document.getElementById("bun_levels").value),
-          parseFloat(document.getElementById("cholesterol_total").value),
-          parseFloat(document.getElementById("cholesterol_ldl").value),
-          parseFloat(document.getElementById("cholesterol_hdl").value),
-          parseFloat(document.getElementById("cholesterol_triglycerides").value),
-          parseFloat(document.getElementById("antihypertensive_medications").value),
-          parseFloat(document.getElementById("statins").value),
-          parseFloat(document.getElementById("antidiabetic_medications").value),
-          parseFloat(document.getElementById("frequent_urination").value),
-          parseFloat(document.getElementById("excessive_thirst").value),
-          parseFloat(document.getElementById("unexplained_weight_loss").value),
-          parseFloat(document.getElementById("blurred_vision").value),
-          parseFloat(document.getElementById("slow_healing_sores").value),
-          parseFloat(document.getElementById("tingling_hands_feet").value),
-          parseFloat(document.getElementById("fatigue_levels").value),
-          parseFloat(document.getElementById("quality_of_life_score").value),
-          parseFloat(document.getElementById("heavy_metals_exposure").value),
-          parseFloat(document.getElementById("occupational_exposure_chemicals").value),
-          parseFloat(document.getElementById("water_quality").value),
-          parseFloat(document.getElementById("medical_checkups_frequency").value),
-          parseFloat(document.getElementById("medication_adherence").value),
-          parseFloat(document.getElementById("health_literacy").value)
-        ];
-
-        // Validate inputs
-        if (inputs.some(isNaN)) {
-          throw new Error("Please fill out all fields before making a prediction.");
-        }
-
-        // Standardize the inputs
-        const standardizedInputs = inputs.map((value, index) => (value - mean[index]) / stdDev[index]);
-
-        // Create tensor and get prediction
-        const inputTensor = tf.tensor2d([standardizedInputs]);
-        const prediction = model.predict(inputTensor).dataSync()[0];
-        const probability = Math.round(prediction * 100);
-
-        // Display the appropriate result based on probability
-        if (probability >= 70) {
-          // High risk (Diabetes)
-          document.getElementById('diabetes-probability').textContent = probability + '%';
-          diabetesResult.style.display = 'block';
-          document.querySelector('#result-diabetes .risk-indicator').style.left = '85%';
-        } else if (probability >= 40) {
-          // Moderate risk (Pre-diabetes)
-          document.getElementById('prediabetes-probability').textContent = probability + '%';
-          prediabetesResult.style.display = 'block';
-          document.querySelector('#result-prediabetes .risk-indicator').style.left = '50%';
-        } else {
-          // Low risk (Non-diabetes)
-          document.getElementById('nondiabetes-probability').textContent = probability + '%';
-          nondiabetesResult.style.display = 'block';
-          document.querySelector('#result-nondiabetes .risk-indicator').style.left = '15%';
-        }
-
-                // Scroll to results
-                document.querySelector('.result-container[style*="display: block"]').scrollIntoView({
-          behavior: 'smooth'
-        });
-      } catch (error) {
-        alert(error.message);
-      } finally {
-        loading.style.display = 'none';
-      }
+async function predict() {
+  try {
+    // Check if model is loaded
+    if (!model) {
+      throw new Error("Model is not loaded yet. Please wait a moment and try again.");
     }
+
+    // Hide all results and show loading
+    diabetesResult.style.display = 'none';
+    prediabetesResult.style.display = 'none';
+    nondiabetesResult.style.display = 'none';
+    loading.style.display = 'flex';
+
+    // Collect input values in the required order
+    const inputs = [
+      parseFloat(document.getElementById("age").value),
+      parseFloat(document.getElementById("gender").value),
+      parseFloat(document.getElementById("ethnicity").value),
+      parseFloat(document.getElementById("socioeconomic_status").value),
+      parseFloat(document.getElementById("education_level").value),
+      parseFloat(document.getElementById("bmi").value),
+      parseFloat(document.getElementById("smoking").value),
+      parseFloat(document.getElementById("alcohol_consumption").value),
+      parseFloat(document.getElementById("physical_activity").value),
+      parseFloat(document.getElementById("diet_quality").value),
+      parseFloat(document.getElementById("sleep_quality").value),
+      parseFloat(document.getElementById("family_history_diabetes").value),
+      parseFloat(document.getElementById("gestational_diabetes").value),
+      parseFloat(document.getElementById("polycystic_ovary_syndrome").value),
+      parseFloat(document.getElementById("previous_pre_diabetes").value),
+      parseFloat(document.getElementById("hypertension").value),
+      parseFloat(document.getElementById("systolic_bp").value),
+      parseFloat(document.getElementById("diastolic_bp").value),
+      parseFloat(document.getElementById("fasting_blood_sugar").value),
+      parseFloat(document.getElementById("hba1c").value),
+      parseFloat(document.getElementById("serum_creatinine").value),
+      parseFloat(document.getElementById("bun_levels").value),
+      parseFloat(document.getElementById("cholesterol_total").value),
+      parseFloat(document.getElementById("cholesterol_ldl").value),
+      parseFloat(document.getElementById("cholesterol_hdl").value),
+      parseFloat(document.getElementById("cholesterol_triglycerides").value),
+      parseFloat(document.getElementById("antihypertensive_medications").value),
+      parseFloat(document.getElementById("statins").value),
+      parseFloat(document.getElementById("antidiabetic_medications").value),
+      parseFloat(document.getElementById("frequent_urination").value),
+      parseFloat(document.getElementById("excessive_thirst").value),
+      parseFloat(document.getElementById("unexplained_weight_loss").value),
+      parseFloat(document.getElementById("fatigue_levels").value),
+      parseFloat(document.getElementById("blurred_vision").value),
+      parseFloat(document.getElementById("slow_healing_sores").value),
+      parseFloat(document.getElementById("tingling_hands_feet").value),
+      parseFloat(document.getElementById("quality_of_life_score").value),
+      parseFloat(document.getElementById("heavy_metals_exposure").value),
+      parseFloat(document.getElementById("occupational_exposure_chemicals").value),
+      parseFloat(document.getElementById("water_quality").value),
+      parseFloat(document.getElementById("medical_checkups_frequency").value),
+      parseFloat(document.getElementById("medication_adherence").value),
+      parseFloat(document.getElementById("health_literacy").value)
+    ];
+
+    // Validate inputs
+    if (inputs.some(isNaN)) {
+      throw new Error("Please fill out all fields before making a prediction.");
+    }
+
+    // Standardize the inputs
+    const standardizedInputs = inputs.map((value, index) => (value - mean[index]) / stdDev[index]);
+
+    // Create tensor and get prediction
+    const inputTensor = tf.tensor2d([standardizedInputs]);
+    
+    // Fixed prediction method - depending on the model type
+    let prediction;
+    if (model.predict) {
+      const outputTensor = model.predict(inputTensor);
+      prediction = await outputTensor.data();
+    } else if (model.execute) {
+      const outputTensor = model.execute(inputTensor);
+      prediction = await outputTensor.data();
+    } else {
+      throw new Error("Incompatible model type");
+    }
+    
+    const probability = Math.round(prediction[0] * 100);
+
+    // Display the appropriate result based on probability
+    if (probability >= 70) {
+      // High risk (Diabetes)
+      document.getElementById('diabetes-probability').textContent = probability + '%';
+      diabetesResult.style.display = 'block';
+      document.querySelector('#result-diabetes .risk-indicator').style.left = probability + '%';
+    } else if (probability >= 40) {
+      // Moderate risk (Pre-diabetes)
+      document.getElementById('prediabetes-probability').textContent = probability + '%';
+      prediabetesResult.style.display = 'block';
+      document.querySelector('#result-prediabetes .risk-indicator').style.left = probability + '%';
+    } else {
+      // Low risk (Non-diabetes)
+      document.getElementById('nondiabetes-probability').textContent = probability + '%';
+      nondiabetesResult.style.display = 'block';
+      document.querySelector('#result-nondiabetes .risk-indicator').style.left = probability + '%';
+    }
+
+    // Scroll to results
+    document.querySelector('.result-container[style*="display: block"]').scrollIntoView({
+      behavior: 'smooth'
+    });
+    
+    // Release memory
+    inputTensor.dispose();
+    
+  } catch (error) {
+    alert(error.message);
+    console.error("Prediction error:", error);
+  } finally {
+    loading.style.display = 'none';
+  }
+}
      </script>
 </body>
 </html>
